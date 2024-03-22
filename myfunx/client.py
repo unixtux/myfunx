@@ -4,17 +4,14 @@ __all__ = ()
 
 import time
 import asyncio
-from . import logger
 from typing import (Any,
                     Union,
                     Literal,
                     Optional,)
 import aiotgm
 from aiotgm.types import *
-from aiotgm.types import REPLY_MARKUP_TYPES
+from . import logger, my_id
 from .json_manager import JsonManager, logger
-
-my_id = 265705876
 
 def parse_list(val: list) -> list[list]:
     '''
