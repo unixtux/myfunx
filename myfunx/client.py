@@ -11,12 +11,13 @@ from typing import (Any,
 import aiotgm
 from aiotgm.types import *
 from . import logger, my_id
-from .json_manager import JsonManager, logger
+from .json_manager import JsonManager
 
 def parse_list(val: list) -> list[list]:
     '''
     Used in the method clean_up_chat()
-    to parse the list of mids.
+    to parse the list of mids in a
+    nested of 100 for each sublist.
     '''
     n = 100
     res = []
@@ -44,8 +45,8 @@ class Client(aiotgm.Client):
     ):
         if not isinstance(tracker, (JsonManager, type(None))):
             raise TypeError(
-               "'tracker' must be None or a JsonManager"
-               f' instance, got {tracker.__class__.__name__}.'
+               "'tracker' must be None or JsonManager,"
+               f' got {tracker.__class__.__name__}.'
             )
         self._tracker = tracker
 
@@ -57,6 +58,21 @@ class Client(aiotgm.Client):
             debug=debug,
             deep_debug=deep_debug
         )
+
+    @property
+    def tracker(self) -> Optional[JsonManager]:
+        return self._tracker
+
+    def track_message(self, msg: Message, /) -> Optional[dict[str, Any]]:
+        if not isinstance(msg, Message):
+            raise TypeError(
+                f'Expected Message in track_message(), got {msg.__class__.__name__}.'
+            )
+        data = self.tracker.check(msg.chat.id)
+        data['mid'] += [msg.message_id]
+        if data['time'] is None:
+            data['time'] = msg.date
+        return data
 
     async def send_message(
         self,
@@ -98,23 +114,6 @@ class Client(aiotgm.Client):
             self.track_message(msg)
         return msg
 
-    @property
-    def tracker(self) -> Optional[JsonManager]:
-        return self._tracker
-
-    def track_message(self, msg: Message, /) -> Optional[dict[str, Any]]:
-        if not isinstance(msg, Message):
-            raise TypeError(
-                f'Expected Message in track_message(), got {msg.__class__.__name__}.'
-            )
-        if msg.chat.type != 'private':
-            return
-        data = self.tracker.check(msg.chat.id)
-        data['mid'] += [msg.message_id]
-        if data['time'] is None:
-            data['time'] = msg.date
-        return data
-
     async def check_mids(self, hours_to_sleep: int = 3) -> None:
         try:
             while True:
@@ -153,7 +152,7 @@ class Client(aiotgm.Client):
         data.update({'mid': [], 'time': None, 'query': None})
         try:
             for messages_list in messages_to_delete:
-                await self.delete_messages(chat_id, messages_list)
+                await super().delete_messages(chat_id, messages_list)
                 if len(messages_to_delete) > 1:
                     messages_history = [x for x in messages_history if x not in messages_list]
                     await asyncio.sleep(1)
