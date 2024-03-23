@@ -64,14 +64,31 @@ class Client(aiotgm.Client):
         return self._tracker
 
     def track_message(self, msg: Message, /) -> Optional[dict[str, Any]]:
+        '''
+        Client method to save in a json in the *traker* updates the following values:
+        "message_id",
+        "username" or first_name",
+        "datetime".
+        '''
+        # Check if type is Message
+        from datetime import datetime
         if not isinstance(msg, Message):
             raise TypeError(
                 f'Expected Message in track_message(), got {msg.__class__.__name__}.'
             )
+        # Check if file is ok
         data = self.tracker.check(msg.chat.id)
+        # Add message_id
         data['mid'] += [msg.message_id]
+        # Add username or first_name
+        if msg.from_user:
+            username = msg.from_user.username
+            data['usr'] = username if username else msg.from_user.first_name
+        else:
+            data['usr'] = msg.chat.id
+        # Add datetime
         if data['time'] is None:
-            data['time'] = msg.date
+            data['time'] = datetime.now().__repr__()
         return data
 
     async def send_message(
