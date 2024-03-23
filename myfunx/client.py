@@ -46,6 +46,8 @@ class Client(aiotgm.Client):
     :type debug: :obj:`bool`, optional
     :param deep_debug: Pass :obj:`True` for more debug information about http requests.
     :type deep_debug: :obj:`bool`, optional
+    :param tracker: A :obj:`~myfunx.JsonManager` instance to track the messages.
+    :type tracker: :obj:`~myfunx.JsonManager`, optional
     '''
     def __init__(
         self,
@@ -111,24 +113,36 @@ class Client(aiotgm.Client):
 
 
     async def send_message(self, chat_id: int | str, text: str, message_thread_id: int | None = None, parse_mode: str | None = None, entities: list[MessageEntity] | None = None, link_preview_options: LinkPreviewOptions | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
+        '''
+        :rtype: :obj:`~aiotgm.types.Message`
+        '''
         msg = await super().send_message(chat_id, text, message_thread_id, parse_mode, entities, link_preview_options, disable_notification, protect_content, reply_parameters, reply_markup)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
     async def send_document(self, chat_id: int | str, document: InputFile | str, message_thread_id: int | None = None, thumbnail: InputFile | str | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, disable_content_type_detection: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
+        '''
+        :rtype: :obj:`~aiotgm.types.Message`
+        '''
         msg = await super().send_document(chat_id, document, message_thread_id, thumbnail, caption, parse_mode, caption_entities, disable_content_type_detection, disable_notification, protect_content, reply_parameters, reply_markup)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
     async def send_video(self, chat_id: int | str, video: InputFile | str, message_thread_id: int | None = None, duration: int | None = None, width: int | None = None, height: int | None = None, thumbnail: InputFile | str | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, has_spoiler: bool | None = None, supports_streaming: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
+        '''
+        :rtype: :obj:`~aiotgm.types.Message`
+        '''
         msg = await super().send_video(chat_id, video, message_thread_id, duration, width, height, thumbnail, caption, parse_mode, caption_entities, has_spoiler, supports_streaming, disable_notification, protect_content, reply_parameters, reply_markup)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
     async def send_photo(self, chat_id: int | str, photo: InputFile | str, message_thread_id: int | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, has_spoiler: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
+        '''
+        :rtype: :obj:`~aiotgm.types.Message`
+        '''
         msg = await super().send_photo(chat_id, photo, message_thread_id, caption, parse_mode, caption_entities, has_spoiler, disable_notification, protect_content, reply_parameters, reply_markup)
         if track and self.tracker:
             self.track_message(msg)

@@ -92,6 +92,14 @@ class JsonManager:
         Method to :meth:`~myfunx.JsonManager.get` a dict from the
         ``chat_id.json`` file or from the ``self.updates``.
 
+        Usage:
+
+        .. code-block:: python3
+
+            from myfunx import JsonManager
+            tracker = JsonManager('<your_usr_dir>', base_dict=None)
+            data = tracker.get(0123456789)
+
         :param chat_id: A `Telegram <https://core.telegram.org/bots/api>`_ chat_id.
         :type chat_id: :obj:`int`
         :rtype: :obj:`dict[str, Any]`
@@ -124,7 +132,16 @@ class JsonManager:
     def check(self, chat_id: int, /) -> dict[str, Any]:
         '''
         Useful for the :obj:`~aiotgm.Client`, to ensure
-        that the json ``keys`` are *ok* in a ``json file``.
+        that the json ``keys`` are *ok* in a ``json file``
+        before to call the :meth:`~myfunx.JsonManager.get`.
+
+        Usage:
+
+        .. code-block:: python3
+
+            from myfunx import JsonManager
+            tracker = JsonManager('<your_usr_dir>', base_dict=None)
+            data = tracker.check(0123456789)
 
         :param chat_id: A `Telegram <https://core.telegram.org/bots/api>`_ chat_id.
         :type chat_id: :obj:`int`
@@ -159,6 +176,14 @@ class JsonManager:
         '''
         Useful for the :obj:`~aiotgm.Client` to merge all the ``json files`` in the
         :obj:`~JsonManager.updates` dict, ``non-integer`` pattern filenames will be skipped.
+
+        Usage:
+
+        .. code-block:: python3
+
+            from myfunx import JsonManager
+            tracker = JsonManager('<your_usr_dir>', base_dict=None)
+            users = tracker.merge()
 
         :rtype: :obj:`dict[int, dict[str, Any]]`
         '''
@@ -196,13 +221,24 @@ class JsonManager:
         return ok
 
 
-    async def process_updates(self, delay: float = 15) -> None:
+    async def process_updates(self, delay: float = 15, /) -> None:
         '''
         Coroutine to ``process`` the :obj:`myfunx.JsonManager.updates`
         and ``write`` them to the ``json files`` every *delay* time.
 
-        :param delay: A time in seconds ``every how often`` the updates will be written to the ``json files``.
-        :type delay: :obj:`int`
+        Usage:
+
+        .. code-block:: python3
+
+            import asyncio
+            from myfunx import JsonManager
+            tracker = JsonManager('<your_usr_dir>', base_dict=None)
+
+            asyncio.run(tracker.process_updates(30))
+
+        :param delay: A time in seconds how often to write the ``json files``.
+        :type delay: :obj:`float`
+        :rtype: :obj:`None`
         '''
         try:
             while True:
