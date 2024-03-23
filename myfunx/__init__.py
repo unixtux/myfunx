@@ -2,10 +2,10 @@
 
 __all__ = ('Client', 'JsonManager', 'my_id')
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 VERSION = __version__
 
-from aiotgm.logger import get_logger
+from aiotgm._logger import get_logger
 logger = get_logger('myfunx ' + VERSION)
 del get_logger
 

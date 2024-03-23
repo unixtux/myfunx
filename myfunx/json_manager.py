@@ -6,7 +6,7 @@ import os
 import re
 import asyncio
 from . import logger
-import aiotgm.api as json
+from aiotgm.api import json
 from typing import (Any,
                     Union,
                     Optional,)
