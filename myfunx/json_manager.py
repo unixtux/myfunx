@@ -33,7 +33,7 @@ class JsonManager:
     :type main_dir: :obj:`str` or :obj:`None`
     :param base_dict: The base dict for ``json files``.
     :type base_dict: :obj:`dict` or :obj:`None`
-    :param debug: Pass :obj:`True` to see more information.
+    :param debug: Pass :obj:`True` to see more information in ``STDOUT``.
     :type debug: :obj:`bool`, optional
     '''
     def __init__(
