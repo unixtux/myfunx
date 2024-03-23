@@ -17,7 +17,7 @@ BASE_DICT = {
     'datetime': None,
     'query': None,
 }
-INT_PATTERN = re.compile(r'^(\-|\d){0,1}\d+$')
+
 MERGE_PATTERN = re.compile(r'^(\-|\d){0,1}\d+\.json$')
 
 def _json_format(chat_id: int) -> str:
@@ -101,7 +101,7 @@ class JsonManager:
         if type(chat_id) is not int:
             raise TypeError(
                 "'chat_id' must be int int JsonManager.get()"
-                f" method, got {chat_id.__class__.__name__}."
+                f" method, got {chat_id}={chat_id.__class__.__name__}."
             )
         if chat_id in self.updates:
             if self._debug:
