@@ -18,7 +18,7 @@ BASE_DICT = {
     'query': None,
 }
 
-MERGE_PATTERN = re.compile(r'^(\-|\d){0,1}\d+\.json$')
+MERGE_PATTERN = re.compile()
 
 def _json_format(chat_id: int) -> str:
     file_name = str(chat_id)
@@ -101,7 +101,7 @@ class JsonManager:
         if type(chat_id) is not int:
             raise TypeError(
                 "'chat_id' must be int int JsonManager.get()"
-                f" method, got {chat_id}={chat_id.__class__.__name__}."
+                f" method, got {chat_id!r}={chat_id.__class__.__name__}."
             )
         if chat_id in self.updates:
             if self._debug:
@@ -166,9 +166,9 @@ class JsonManager:
         '''
         for file_name in os.listdir(self.main_dir):
 
-            if MERGE_PATTERN.match(file_name):
+            if re.match(r'^(\-|\d){0,1}\d+\.json$', file_name):
                 chat_id = file_name.replace('.json', str())
-                self.get(chat_id)
+                self.get(int(chat_id))
             else:
                 logger.warning(
                     f'Unexpected file {self.main_dir + file_name!r}'
