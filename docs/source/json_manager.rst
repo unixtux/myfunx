@@ -1,7 +1,6 @@
 JsonManager
 ===========
 
-.. autoclass:: myfunx.json_manager.JsonManager
-    :show-members:
+.. autoclass:: myfunx.JsonManager
+    :members:
     :undoc-members:
-    :show-inheritance:

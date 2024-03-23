@@ -2,6 +2,7 @@
 ==========
 
 .. toctree::
+   client
    json_manager
    :maxdepth: 3
    :caption: Contents:

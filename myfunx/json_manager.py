@@ -28,14 +28,20 @@ def _json_format(chat_id: int) -> str:
 
 
 class JsonManager:
-
+    '''
+    :param main_dir: The main directory to write ``json files``.
+    :type main_dir: :obj:`str` or :obj:`None`
+    :param base_dict: The base dict for ``json files``.
+    :type base_dict: :obj:`dict` or :obj:`None`
+    :param debug: Pass :obj:`True` to see more information.
+    :type debug: :obj:`bool`, optional
+    '''
     def __init__(
         self,
         main_dir: Optional[str],
         *,
-        debug: Optional[bool] = None,
-        deep_debug: bool = None,
-        base_dict: Optional[dict[str, Any]]
+        base_dict: Optional[dict[str, Any]],
+        debug: Optional[bool] = None
     ):
         if not isinstance(main_dir, (str, type(None))):
             raise TypeError(
@@ -66,13 +72,9 @@ class JsonManager:
         self._base_dict = base_dict
 
         self._debug = debug
-        self._deep_debug = deep_debug
 
         if debug:
             logger.setLevel(10)
-        elif deep_debug:
-            logger.setLevel(10)
-            self._debug = deep_debug
 
     @property
     def main_dir(self) -> str:
@@ -89,7 +91,7 @@ class JsonManager:
 
     def get(self, chat_id: int, /) -> dict[str, Any]:
         '''
-        Method to ``get()`` a dict from the
+        Method to :meth:`~myfunx.JsonManager.get` a dict from the
         ``chat_id.json`` file or from the ``self.updates``.
 
         :param chat_id: A `Telegram <https://core.telegram.org/bots/api>`_ chat_id.
@@ -179,12 +181,15 @@ class JsonManager:
         '''
         You need to call this method ``explicitly``, to write
         the :obj:`~myfunx.json_manager.JsonManager.updates` to the
-        ``json files``. Used in the method :meth:`~myfunx.json_manager.JsonManager.process_updates`.
+        ``json files``. Used in the method :meth:`~myfunx.JsonManager.process_updates`.
+
+        :rtype: :obj:`int`
         '''
         ok = 0
         for chat_id in self.updates:
             file_name = _json_format(chat_id)
-            logger.debug(f'Pushing {chat_id!r} {self.updates[chat_id]!r}')
+            if self._debug:
+                logger.debug(f'Pushing {chat_id!r} {self.updates[chat_id]!r}')
 
             with open(self.main_dir + file_name, 'w') as w:
                 w.write(json.dumps(self.updates[chat_id], indent = 2))
@@ -195,7 +200,7 @@ class JsonManager:
 
     async def process_updates(self, delay: float = 15) -> None:
         '''
-        Coroutine to ``process`` the :obj:`myfunx.json_manager.JsonManager.updates`
+        Coroutine to ``process`` the :obj:`myfunx.JsonManager.updates`
         and ``write`` them to the ``json files`` every *delay* time.
 
         :param delay: A time in seconds ``every how often`` the updates will be written to the ``json files``.
