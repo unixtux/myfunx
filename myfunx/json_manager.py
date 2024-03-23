@@ -14,8 +14,8 @@ BASE_DICT = {
     'usr': None,
     'mid': [],
     'time': None,
+    'datetime': None,
     'query': None,
-    'datetime': None
 }
 INT_PATTERN = re.compile(r'^(\-|\d){0,1}\d+$')
 MERGE_PATTERN = re.compile(r'^(\-|\d){0,1}\d+\.json$')
