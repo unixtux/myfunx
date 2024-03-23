@@ -33,6 +33,8 @@ class JsonManager:
         self,
         main_dir: Optional[str],
         *,
+        debug: Optional[bool] = None,
+        deep_debug: bool = None,
         base_dict: Optional[dict[str, Any]]
     ):
         if not isinstance(main_dir, (str, type(None))):
@@ -63,6 +65,15 @@ class JsonManager:
         base_dict.update(BASE_DICT)
         self._base_dict = base_dict
 
+        self._debug = debug
+        self._deep_debug = deep_debug
+
+        if debug:
+            logger.setLevel(10)
+        elif deep_debug:
+            logger.setLevel(10)
+            self._debug = deep_debug
+
     @property
     def main_dir(self) -> str:
         return self._main_dir
@@ -77,14 +88,21 @@ class JsonManager:
 
 
     def get(self, chat_id: int, /) -> dict[str, Any]:
+        '''
+        Method to ``get()`` a dict from the
+        ``chat_id.json`` file or from the ``self.updates``.
 
-        if not INT_PATTERN.match(str(chat_id)):
-            raise ValueError(
-                'Integer conversion failed'
-                f' for {chat_id!r} in get() method.'
+        :param chat_id: A `Telegram <https://core.telegram.org/bots/api>`_ chat_id.
+        :type chat_id: :obj:`int`
+        '''
+        if type(chat_id) is not int:
+            raise TypeError(
+                "'chat_id' must be int int JsonManager.get()"
+                f" method, got {chat_id.__class__.__name__}."
             )
         if chat_id in self.updates:
-            logger.debug(f'Got {chat_id!r} from updates.')
+            if self._debug:
+                logger.debug(f'Got {chat_id} from updates.')
         else:
             file_name = _json_format(chat_id)
             try:
@@ -93,19 +111,19 @@ class JsonManager:
             except FileNotFoundError:
                 raise FileNotFoundError(
                     f'No such file {self.main_dir + file_name!r}.'
-                    ' You should use the check() method before to'
-                    ' call the get() to ensure the file exists.'
+                    ' You should use the JsonManager.check() method'
+                    ' before to call the JsonManager.get() to ensure the file exists.'
                 )
-            logger.debug(f'Got {chat_id!r} from file.')
+            if self._debug:
+                logger.debug(f'Got {chat_id} from file.')
 
         return self.updates[chat_id]
 
 
     def merge(self) -> dict[int, dict[str, Any]]:
         '''
-        Useful for the bot Client to merge
-        all the json in the updates dict,
-        non-integer files will be skipped
+        Useful for the ``aiotgm.Client`` to merge all the ``json files`` in the
+        ``JsonManager.updates`` dict, non-integer files will be skipped
         '''
         for file_name in os.listdir(self.main_dir):
 
@@ -115,28 +133,36 @@ class JsonManager:
             else:
                 logger.warning(
                     f'Unexpected file {self.main_dir + file_name!r}'
-                    ' in the merge() method, it was skipped.'
+                    ' in the JsonManager.merge() method, it was skipped.'
                 )
         return self.updates
 
 
     def check(self, chat_id: int, /) -> dict[str, Any]:
         '''
-        Useful for the bot Client, to ensure that the json keys exist.
+        Useful for the ``aiotgm.Client``, to ensure
+        that ``keys`` are ``ok`` in a ``json file``.
+
+        :param chat_id: A `Telegram <https://core.telegram.org/bots/api>`_ chat_id.
+        :type chat_id: :obj:`int`
         '''
         file_name = _json_format(chat_id)
 
-        if (chat_id in self.updates
-            or os.path.isfile(self.main_dir + file_name)):
-
+        if (
+            chat_id in self.updates
+            or os.path.isfile(self.main_dir + file_name)
+        ):
             result = {}
             actual_dict = self.get(chat_id)
-            for key, val in self.base_dict.items():
+
+            for key in self.base_dict:
 
                 if key in actual_dict:
                     val = actual_dict[key]
+                else:
+                    val = self.base_dict[key]
 
-                result.update({key: val})
+                result[key] = val
         else:
             result = self.base_dict
 
@@ -147,23 +173,28 @@ class JsonManager:
 
     def push_updates(self) -> int:
         '''
-        You need to call this method explicitly, to push the
-        updates to files. Used in the method process_updates().
+        You need to call this method ``explicitly``, to write the ``JsonManager.updates``
+        to the ``json files``. Used in the method ``JsonManager.process_updates()``.
         '''
-
+        ok = 0
         for chat_id in self.updates:
             file_name = _json_format(chat_id)
             logger.debug(f'Pushing {chat_id!r} {self.updates[chat_id]!r}')
 
             with open(self.main_dir + file_name, 'w') as w:
                 w.write(json.dumps(self.updates[chat_id], indent = 2))
+                ok += 1
 
-        return len(self.updates)
+        return ok
 
 
     async def process_updates(self, delay: int = 15) -> None:
         '''
-        Coroutine to process the updates and write them to files.
+        Coroutine to ``process`` the ``JsonManager.updates``
+        and ``write`` them to the ``json files`` every *delay* time.
+
+        :param delay: A time in seconds ``every how often`` the updates will be written to the ``json files``.
+        :type delay: :obj:`int`
         '''
         try:
             while True:
@@ -172,8 +203,8 @@ class JsonManager:
                 await asyncio.sleep(delay)
         except:
             pushed = self.push_updates()
-            were = 'was' if pushed == 1 else 'were'
             s = str() if pushed == 1 else 's'
+            were = 'was' if pushed == 1 else 'were'
             logger.info(
                 f'{pushed} json file{s} {were} saved.'
             )
