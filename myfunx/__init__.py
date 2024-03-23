@@ -1,14 +1,13 @@
 #!/bin/env python3
 
-__all__ = ('Client', 'JsonManager', 'my_id')
+__all__ = ('Client', 'JsonManager',)
 
-__version__ = '0.2.5'
+__version__ = '0.2.6'
 VERSION = __version__
 
 from aiotgm._logging import get_logger
 logger = get_logger('myfunx ' + VERSION)
 del get_logger
 
-my_id = 265705876
 from .client import Client
 from .json_manager import JsonManager

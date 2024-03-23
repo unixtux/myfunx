@@ -9,8 +9,9 @@ from typing import (Any,
                     Literal,
                     Optional,)
 import aiotgm
+from aiotgm.types import InputFile, LinkPreviewOptions, Message, MessageEntity, ReplyParameters
+from . import logger
 from aiotgm.types import *
-from . import logger, my_id
 from .json_manager import JsonManager
 
 def parse_list(val: list) -> list[list[int]]:
@@ -91,47 +92,32 @@ class Client(aiotgm.Client):
             data['time'] = datetime.now().__repr__()
         return data
 
-    async def send_message(
-        self,
-        chat_id: int | str,
-        text: str,
-        message_thread_id: int | None = None,
-        parse_mode: str | None = None,
-        entities: list[MessageEntity] | None = None,
-        link_preview_options: LinkPreviewOptions | None = None,
-        disable_notification: bool | None = None,
-        protect_content: bool | None = None,
-        reply_parameters: ReplyParameters | None = None,
-        reply_markup: REPLY_MARKUP_TYPES | None = None,
-        track: bool = True
-    ) -> Message:
+
+    async def send_message(self, chat_id: int | str, text: str, message_thread_id: int | None = None, parse_mode: str | None = None, entities: list[MessageEntity] | None = None, link_preview_options: LinkPreviewOptions | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
         msg = await super().send_message(chat_id, text, message_thread_id, parse_mode, entities, link_preview_options, disable_notification, protect_content, reply_parameters, reply_markup)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
-    async def send_document(
-        self,
-        chat_id: int | str,
-        document: InputFile | str,
-        message_thread_id: int | None = None,
-        thumbnail: InputFile | str | None = None,
-        caption: str | None = None,
-        parse_mode: str | None = None,
-        caption_entities: list[MessageEntity] | None = None,
-        disable_content_type_detection: bool | None = None,
-        disable_notification: bool | None = None,
-        protect_content: bool | None = None,
-        reply_parameters: ReplyParameters | None = None,
-        reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None,
-        track: bool = True
-    ) -> Message:
+    async def send_document(self, chat_id: int | str, document: InputFile | str, message_thread_id: int | None = None, thumbnail: InputFile | str | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, disable_content_type_detection: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
         msg = await super().send_document(chat_id, document, message_thread_id, thumbnail, caption, parse_mode, caption_entities, disable_content_type_detection, disable_notification, protect_content, reply_parameters, reply_markup)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
-    async def check_mids(self, hours_to_sleep: int = 3) -> None:
+    async def send_video(self, chat_id: int | str, video: InputFile | str, message_thread_id: int | None = None, duration: int | None = None, width: int | None = None, height: int | None = None, thumbnail: InputFile | str | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, has_spoiler: bool | None = None, supports_streaming: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
+        msg = await super().send_video(chat_id, video, message_thread_id, duration, width, height, thumbnail, caption, parse_mode, caption_entities, has_spoiler, supports_streaming, disable_notification, protect_content, reply_parameters, reply_markup)
+        if track and self.tracker:
+            self.track_message(msg)
+        return msg
+
+    async def send_photo(self, chat_id: int | str, photo: InputFile | str, message_thread_id: int | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, has_spoiler: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
+        msg = await super().send_photo(chat_id, photo, message_thread_id, caption, parse_mode, caption_entities, has_spoiler, disable_notification, protect_content, reply_parameters, reply_markup)
+        if track and self.tracker:
+            self.track_message(msg)
+        return msg
+
+    async def check_mids(self, target_id: Union[int, str], delay: float = 3600) -> None:
         try:
             while True:
                 start_time = time.time()
@@ -151,9 +137,9 @@ class Client(aiotgm.Client):
                                 text += f'{remaining_minutes} minutes'
                             text += f" to clean {user}'s chat 📝️\n"
                 if text:
-                    await super().send_message(my_id, text)
+                    await self.send_message(target_id, text)
                 diff_time = time.time() - start_time
-                await asyncio.sleep(3600 * hours_to_sleep - diff_time)
+                await asyncio.sleep(delay - diff_time)
 
         except:
             logger.info('Client method check_mids() was interrupted.')
@@ -169,7 +155,7 @@ class Client(aiotgm.Client):
         data.update({'mid': [], 'time': None, 'query': None})
         try:
             for messages_list in messages_to_delete:
-                await super().delete_messages(chat_id, messages_list)
+                await self.delete_messages(chat_id, messages_list)
                 if len(messages_to_delete) > 1:
                     messages_history = [x for x in messages_history if x not in messages_list]
                     await asyncio.sleep(1)
