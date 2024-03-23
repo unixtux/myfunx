@@ -87,9 +87,12 @@ class Client(aiotgm.Client):
             data['usr'] = username if username else msg.from_user.first_name
         else:
             data['usr'] = msg.chat.id
-        # Add datetime
+        # Add Unix-time
         if data['time'] is None:
-            data['time'] = datetime.now().__repr__()
+            data['time'] = msg.date
+        # Add datetime
+        if data['datetime'] is None:
+            data['datetime'] = str(datetime.now())
         return data
 
 
@@ -117,7 +120,7 @@ class Client(aiotgm.Client):
             self.track_message(msg)
         return msg
 
-    async def check_mids(self, target_id: Union[int, str], delay: float = 3600) -> None:
+    async def check_mids(self, target_id: Union[int, str], *, delay: float = 3600 * 3) -> None:
         try:
             while True:
                 start_time = time.time()
