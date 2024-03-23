@@ -148,7 +148,7 @@ class Client(aiotgm.Client):
             self.track_message(msg)
         return msg
 
-    async def check_mids(self, target_id: Union[int, str], *, delay: float = 3600 * 3) -> None:
+    async def check_mids(self, target_id: Union[int, str], /, delay: float = 3600 * 3) -> None:
         try:
             while True:
                 start_time = time.time()
