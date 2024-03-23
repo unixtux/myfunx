@@ -94,6 +94,7 @@ class JsonManager:
 
         :param chat_id: A `Telegram <https://core.telegram.org/bots/api>`_ chat_id.
         :type chat_id: :obj:`int`
+        :rtype: :obj:`dict[str, Any]`
         '''
         if type(chat_id) is not int:
             raise TypeError(
@@ -120,31 +121,14 @@ class JsonManager:
         return self.updates[chat_id]
 
 
-    def merge(self) -> dict[int, dict[str, Any]]:
-        '''
-        Useful for the ``aiotgm.Client`` to merge all the ``json files`` in the
-        ``JsonManager.updates`` dict, non-integer files will be skipped
-        '''
-        for file_name in os.listdir(self.main_dir):
-
-            if MERGE_PATTERN.match(file_name):
-                chat_id = file_name.replace('.json', str())
-                self.get(chat_id)
-            else:
-                logger.warning(
-                    f'Unexpected file {self.main_dir + file_name!r}'
-                    ' in the JsonManager.merge() method, it was skipped.'
-                )
-        return self.updates
-
-
     def check(self, chat_id: int, /) -> dict[str, Any]:
         '''
-        Useful for the ``aiotgm.Client``, to ensure
-        that ``keys`` are ``ok`` in a ``json file``.
+        Useful for the :obj:`~aiotgm.Client`, to ensure
+        that the json ``keys`` are *ok* in a ``json file``.
 
         :param chat_id: A `Telegram <https://core.telegram.org/bots/api>`_ chat_id.
         :type chat_id: :obj:`int`
+        :rtype: :obj:`dict[str, Any]`
         '''
         file_name = _json_format(chat_id)
 
@@ -171,10 +155,31 @@ class JsonManager:
         return self.updates[chat_id]
 
 
+    def merge(self) -> dict[int, dict[str, Any]]:
+        '''
+        Useful for the :obj:`~aiotgm.Client` to merge all the ``json files`` in the
+        :obj:`~JsonManager.updates` dict, ``non-integer`` pattern filenames will be skipped.
+
+        :rtype: :obj:`dict[int, dict[str, Any]]`
+        '''
+        for file_name in os.listdir(self.main_dir):
+
+            if MERGE_PATTERN.match(file_name):
+                chat_id = file_name.replace('.json', str())
+                self.get(chat_id)
+            else:
+                logger.warning(
+                    f'Unexpected file {self.main_dir + file_name!r}'
+                    ' in the JsonManager.merge() method, it was skipped.'
+                )
+        return self.updates
+
+
     def push_updates(self) -> int:
         '''
-        You need to call this method ``explicitly``, to write the ``JsonManager.updates``
-        to the ``json files``. Used in the method ``JsonManager.process_updates()``.
+        You need to call this method ``explicitly``, to write
+        the :obj:`~myfunx.json_manager.JsonManager.updates` to the
+        ``json files``. Used in the method :meth:`~myfunx.json_manager.JsonManager.process_updates`.
         '''
         ok = 0
         for chat_id in self.updates:
@@ -188,9 +193,9 @@ class JsonManager:
         return ok
 
 
-    async def process_updates(self, delay: int = 15) -> None:
+    async def process_updates(self, delay: float = 15) -> None:
         '''
-        Coroutine to ``process`` the ``JsonManager.updates``
+        Coroutine to ``process`` the :obj:`myfunx.json_manager.JsonManager.updates`
         and ``write`` them to the ``json files`` every *delay* time.
 
         :param delay: A time in seconds ``every how often`` the updates will be written to the ``json files``.
