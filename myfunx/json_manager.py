@@ -18,8 +18,6 @@ BASE_DICT = {
     'query': None,
 }
 
-MERGE_PATTERN = re.compile()
-
 def _json_format(chat_id: int) -> str:
     file_name = str(chat_id)
     if not file_name.endswith('.json'):
