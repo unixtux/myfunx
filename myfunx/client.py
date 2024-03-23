@@ -9,7 +9,6 @@ from typing import (Any,
                     Literal,
                     Optional,)
 import aiotgm
-from aiotgm.types import InputFile, LinkPreviewOptions, Message, MessageEntity, ReplyParameters
 from . import logger
 from aiotgm.types import *
 from .json_manager import JsonManager
