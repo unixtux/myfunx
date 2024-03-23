@@ -2,7 +2,7 @@
 
 __all__ = ('Client', 'JsonManager',)
 
-__version__ = '0.3.3'
+__version__ = '0.3.4'
 VERSION = __version__
 
 from aiotgm._logging import get_logger
