@@ -2,6 +2,7 @@
 ==========
 
 .. toctree::
+   installation
    client
    json_manager
    :maxdepth: 3

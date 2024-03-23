@@ -31,7 +31,22 @@ def parse_list(val: list) -> list[list[int]]:
 
 
 class Client(aiotgm.Client):
+    '''
+    Main class to communicate with the `Telegram Bot API <https://core.telegram.org/bots/api>`_.
 
+    :param token: Api token obtained from `@BotFather <https://t.me/botfather>`_.
+    :type token: :obj:`str`
+    :param parse_mode: Select a default `parse mode <https://core.telegram.org/bots/api#formatting-options>`_ option (it can be overwritten in the methods).
+    :type parse_mode: :obj:`str`, optional
+    :param protect_content: Pass :obj:`True` to use the protect content option by default (it can be overwritten in the methods).
+    :type protect_content: :obj:`bool`, optional
+    :param proxy: Pass a proxy string to be used in the http requests.
+    :type proxy: :obj:`str`, optional
+    :param debug: Pass :obj:`True` for some debug information.
+    :type debug: :obj:`bool`, optional
+    :param deep_debug: Pass :obj:`True` for more debug information about http requests.
+    :type deep_debug: :obj:`bool`, optional
+    '''
     def __init__(
         self,
         token: str,
