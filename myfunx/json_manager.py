@@ -20,7 +20,7 @@ BASE_DICT = {
 INT_PATTERN = re.compile(r'^(\-|\d){0,1}\d+$')
 MERGE_PATTERN = re.compile(r'^(\-|\d){0,1}\d+\.json$')
 
-def _json_format(chat_id: Union[str, int]) -> str:
+def _json_format(chat_id: int) -> str:
     file_name = str(chat_id)
     if not file_name.endswith('.json'):
         return file_name + '.json'
@@ -155,8 +155,8 @@ class JsonManager:
             file_name = _json_format(chat_id)
             logger.debug(f'Pushing {chat_id!r} {self.updates[chat_id]!r}')
 
-            with open(self.main_dir + file_name, 'w') as push_json:
-                push_json.write(json.dumps(self.updates[chat_id], indent = 2))
+            with open(self.main_dir + file_name, 'w') as w:
+                w.write(json.dumps(self.updates[chat_id], indent = 2))
 
         return len(self.updates)
 
