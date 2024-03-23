@@ -10,6 +10,8 @@ Welcome to myfunx's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   json_manager
+
 
 
 Indices and tables
