@@ -78,12 +78,10 @@ class JsonManager:
 
     def get(self, chat_id: int, /) -> dict[str, Any]:
 
-        if INT_PATTERN.match(str(chat_id)):
-            chat_id = int(chat_id)
-        else:
-            logger.warning(
-                'integer conversion failed'
-                f' for {chat_id!r} in get() method'
+        if not INT_PATTERN.match(str(chat_id)):
+            raise ValueError(
+                'Integer conversion failed'
+                f' for {chat_id!r} in get() method.'
             )
         if chat_id in self.updates:
             logger.debug(f'Got {chat_id!r} from updates.')
