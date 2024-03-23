@@ -13,7 +13,7 @@ from aiotgm.types import *
 from . import logger, my_id
 from .json_manager import JsonManager
 
-def parse_list(val: list) -> list[list]:
+def parse_list(val: list) -> list[list[int]]:
     '''
     Used in the method clean_up_chat()
     to parse the list of mids in a
@@ -151,7 +151,7 @@ class Client(aiotgm.Client):
                                 text += f'{remaining_minutes} minutes'
                             text += f" to clean {user}'s chat 📝️\n"
                 if text:
-                    await self.send_message(my_id, text)
+                    await super().send_message(my_id, text)
                 diff_time = time.time() - start_time
                 await asyncio.sleep(3600 * hours_to_sleep - diff_time)
 
