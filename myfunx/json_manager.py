@@ -223,7 +223,7 @@ class JsonManager:
 
     async def process_updates(self, delay: float = 15, /) -> None:
         '''
-        Coroutine to ``process`` the :obj:`myfunx.JsonManager.updates`
+        Coroutine to ``process`` the :obj:`~myfunx.JsonManager.updates`
         and ``write`` them to the ``json files`` every *delay* time.
 
         Usage:
