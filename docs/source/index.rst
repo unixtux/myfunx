@@ -1,22 +1,11 @@
-.. myfunx documentation master file, created by
-   sphinx-quickstart on Sat Mar 23 18:30:16 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to myfunx's documentation!
-==================================
+**myfunx**
+==========
 
 .. toctree::
-   :maxdepth: 2
+   json_manager
+   :maxdepth: 3
    :caption: Contents:
 
-   json_manager
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
