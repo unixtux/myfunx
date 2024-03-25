@@ -97,12 +97,6 @@ class Client(aiotgm.Client):
         data = self.tracker.check(msg.chat.id)
         # Add message_id
         data['mid'] += [msg.message_id]
-        # Add username or first_name
-        if msg.from_user:
-            username = msg.from_user.username
-            data['usr'] = username if username else msg.from_user.first_name
-        else:
-            data['usr'] = msg.chat.id
         # Add Unix-time
         if data['time'] is None:
             data['time'] = msg.date
