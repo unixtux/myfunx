@@ -182,8 +182,11 @@ class Client(aiotgm.Client):
     ) -> Literal[True]:
         data = self.tracker.get(chat_id)
         messages_history = data['mid']
+        old_time = data['time']
+        old_datetime = data['datetime']
+        old_query = data['query']
         messages_to_delete = parse_list(messages_history)
-        data.update({'mid': [], 'time': None, 'query': None})
+        data.update({'mid': [], 'time': None, 'datetime': None, 'query': None})
         try:
             for messages_list in messages_to_delete:
                 await self.delete_messages(chat_id, messages_list)
@@ -193,6 +196,9 @@ class Client(aiotgm.Client):
         except:
             restored_data = self.tracker.get(chat_id)
             restored_data['mid'] += messages_history
+            restored_data['time'] = old_time
+            restored_data['datetime'] = old_datetime
+            restored_data['query'] = old_query
             self.tracker.updates[chat_id] = restored_data
             self.tracker.push_updates()
             logger.warning(
