@@ -9,7 +9,7 @@ HEADERS = {
 def parse_la_repubblica() -> list[tuple[str, str]]:
     url = 'https://www.repubblica.it/'
     html = requests.get(url, headers=HEADERS).text
-    links = re.findall(r'<.*?class="entry__title">(.|\n)*?<\s*a\s*href\s*=\s*"\s*(.*?)\s*"\s*>\s*\n\s*([\w"\'.]*)', html)
+    links = re.findall(r'<.*?class="entry__title">(.|\n)*?<\s*a\s*href\s*=\s*"\s*(.*?)\s*"\s*>\s*\n\s*(\w.*)', html)
     all_the_links = []
     for tp in links:
         tp = tp[1:]
