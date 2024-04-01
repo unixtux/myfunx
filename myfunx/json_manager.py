@@ -106,8 +106,8 @@ class JsonManager:
         '''
         if type(chat_id) is not int:
             raise TypeError(
-                "'chat_id' must be int int JsonManager.get()"
-                f" method, got {chat_id!r}={chat_id.__class__.__name__}."
+                "'chat_id' must be int in JsonManager.get()"
+                f" method, got {chat_id.__class__.__name__}."
             )
         if chat_id in self.updates:
             if self._debug:
