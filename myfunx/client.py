@@ -31,24 +31,7 @@ def parse_list(val: list) -> list[list[int]]:
 
 
 class Client(aiotgm.Client):
-    '''
-    Main class to communicate with the `Telegram Bot API <https://core.telegram.org/bots/api>`_.
 
-    :param token: Api token obtained from `@BotFather <https://t.me/botfather>`_.
-    :type token: :obj:`str`
-    :param parse_mode: Select a default `parse mode <https://core.telegram.org/bots/api#formatting-options>`_ option (it can be overwritten in the methods).
-    :type parse_mode: :obj:`str`, optional
-    :param protect_content: Pass :obj:`True` to use the protect content option by default (it can be overwritten in the methods).
-    :type protect_content: :obj:`bool`, optional
-    :param proxy: Pass a proxy string to be used in the http requests.
-    :type proxy: :obj:`str`, optional
-    :param debug: Pass :obj:`True` for some debug information.
-    :type debug: :obj:`bool`, optional
-    :param deep_debug: Pass :obj:`True` for more debug information about http requests.
-    :type deep_debug: :obj:`bool`, optional
-    :param tracker: A :obj:`~myfunx.JsonManager` instance to track the messages.
-    :type tracker: :obj:`~myfunx.JsonManager`, optional
-    '''
     def __init__(
         self,
         token: str,
@@ -81,12 +64,6 @@ class Client(aiotgm.Client):
         return self._tracker
 
     def track_message(self, msg: Message, /) -> Optional[dict[str, Any]]:
-        '''
-        Client method to save in a json in the *traker* updates the following values:
-        "message_id",
-        "username" or first_name",
-        "datetime".
-        '''
         # Check if type is Message
         from datetime import datetime
         if not isinstance(msg, Message):
@@ -106,38 +83,26 @@ class Client(aiotgm.Client):
         return data
 
 
-    async def send_message(self, chat_id: int | str, text: str, message_thread_id: int | None = None, parse_mode: str | None = None, entities: list[MessageEntity] | None = None, link_preview_options: LinkPreviewOptions | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
-        '''
-        :rtype: :obj:`~aiotgm.types.Message`
-        '''
-        msg = await super().send_message(chat_id, text, message_thread_id, parse_mode, entities, link_preview_options, disable_notification, protect_content, reply_parameters, reply_markup)
+    async def send_message(self, *args, track: bool = True, **kwargs):
+        msg = await super().send_message(*args, **kwargs)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
-    async def send_document(self, chat_id: int | str, document: InputFile | str, message_thread_id: int | None = None, thumbnail: InputFile | str | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, disable_content_type_detection: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
-        '''
-        :rtype: :obj:`~aiotgm.types.Message`
-        '''
-        msg = await super().send_document(chat_id, document, message_thread_id, thumbnail, caption, parse_mode, caption_entities, disable_content_type_detection, disable_notification, protect_content, reply_parameters, reply_markup)
+    async def send_document(self, *args, track: bool = True, **kwargs):
+        msg = await super().send_document(*args, **kwargs)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
-    async def send_video(self, chat_id: int | str, video: InputFile | str, message_thread_id: int | None = None, duration: int | None = None, width: int | None = None, height: int | None = None, thumbnail: InputFile | str | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, has_spoiler: bool | None = None, supports_streaming: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
-        '''
-        :rtype: :obj:`~aiotgm.types.Message`
-        '''
-        msg = await super().send_video(chat_id, video, message_thread_id, duration, width, height, thumbnail, caption, parse_mode, caption_entities, has_spoiler, supports_streaming, disable_notification, protect_content, reply_parameters, reply_markup)
+    async def send_video(self, *args, track: bool = True, **kwargs):
+        msg = await super().send_video(*args, **kwargs)
         if track and self.tracker:
             self.track_message(msg)
         return msg
 
-    async def send_photo(self, chat_id: int | str, photo: InputFile | str, message_thread_id: int | None = None, caption: str | None = None, parse_mode: str | None = None, caption_entities: list[MessageEntity] | None = None, has_spoiler: bool | None = None, disable_notification: bool | None = None, protect_content: bool | None = None, reply_parameters: ReplyParameters | None = None, reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | ReplyKeyboardRemove | ForceReply | None = None, track: bool = True) -> Message:
-        '''
-        :rtype: :obj:`~aiotgm.types.Message`
-        '''
-        msg = await super().send_photo(chat_id, photo, message_thread_id, caption, parse_mode, caption_entities, has_spoiler, disable_notification, protect_content, reply_parameters, reply_markup)
+    async def send_photo(self, *args, track: bool = True, **kwargs):
+        msg = await super().send_photo(*args, **kwargs)
         if track and self.tracker:
             self.track_message(msg)
         return msg
