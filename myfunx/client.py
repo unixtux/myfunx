@@ -72,6 +72,8 @@ class Client(Client):
             )
         # Check if file is ok
         data = self.tracker.check(msg.chat.id)
+        # Add username
+        data['usr'] = '@' + msg.from_user.username if msg.from_user.username else msg.from_user.first_name
         # Add message_id
         data['mid'] += [msg.message_id]
         # Add Unix-time
