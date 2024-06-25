@@ -38,7 +38,7 @@ class JsonManager:
         self,
         main_dir: Optional[str],
         *,
-        base_dict: Optional[dict[str, Any]],
+        base_dict: dict[str, Any] = {},
         debug: Optional[bool] = None
     ):
         if not isinstance(main_dir, (str, type(None))):
@@ -51,10 +51,10 @@ class JsonManager:
                 "'main_dir' is not a directory, pass"
                 ' None to use the current one.'
             )
-        if not isinstance(base_dict, (dict, type(None))):
+        if not isinstance(base_dict, dict):
             raise TypeError(
-                "'base_dict' must be dict or"
-                f' None, got {base_dict.__class__.__name__}.'
+                "'base_dict' must be dict,"
+                f' got {base_dict.__class__.__name__}.'
             )
 
         if main_dir is None: main_dir = './'
@@ -63,11 +63,7 @@ class JsonManager:
         self._main_dir = main_dir
         self._updates = {}
 
-        if base_dict is None:
-            base_dict = {}
-
-        base_dict.update(BASE_DICT)
-        self._base_dict = base_dict
+        self._base_dict = BASE_DICT | base_dict
 
         self._debug = debug
 

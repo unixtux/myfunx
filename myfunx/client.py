@@ -8,7 +8,8 @@ from typing import (Any,
                     Union,
                     Literal,
                     Optional,)
-import aiotgm
+from aiotgm import Client
+from datetime import datetime
 from . import logger
 from aiotgm.types import *
 from .json_manager import JsonManager
@@ -30,7 +31,7 @@ def parse_list(val: list) -> list[list[int]]:
             n += 100
 
 
-class Client(aiotgm.Client):
+class Client(Client):
 
     def __init__(
         self,
@@ -65,7 +66,6 @@ class Client(aiotgm.Client):
 
     def track_message(self, msg: Message, /) -> Optional[dict[str, Any]]:
         # Check if type is Message
-        from datetime import datetime
         if not isinstance(msg, Message):
             raise TypeError(
                 f'Expected Message in track_message(), got {msg.__class__.__name__}.'
