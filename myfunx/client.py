@@ -70,18 +70,10 @@ class Client(Client):
             raise TypeError(
                 f'Expected Message in track_message(), got {msg.__class__.__name__}.'
             )
-        # Check if file is ok
         data = self.tracker.check(msg.chat.id)
-        # Add username
-        data['usr'] = '@' + msg.from_user.username if msg.from_user.username else msg.from_user.first_name
-        # Add message_id
         data['mid'] += [msg.message_id]
-        # Add Unix-time
-        if data['time'] is None:
+        if not data['time']:
             data['time'] = msg.date
-        # Add datetime
-        if data['datetime'] is None:
-            data['datetime'] = str(datetime.now())
         return data
 
 
