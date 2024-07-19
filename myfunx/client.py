@@ -71,7 +71,7 @@ class Client(Client):
                 f'Expected Message in track_message(), got {msg.__class__.__name__}.'
             )
         data = self.tracker.check(msg.chat.id)
-        data['mid'] += [msg.message_id]
+        data['mids'] += [msg.message_id]
         if not data['time']:
             data['time'] = msg.date
         return data
@@ -110,7 +110,7 @@ class Client(Client):
                 for chat_id in users:
                     data = users[chat_id]
                     if data['time']:
-                        user = data['usr']
+                        user = data['user']
                         first_log = data['time']
                         remaining_hours = 48 - (round((start_time-first_log) / 3600))
                         if remaining_hours <= 12:
@@ -134,12 +134,11 @@ class Client(Client):
         chat_id: Union[int, str]
     ) -> Literal[True]:
         data = self.tracker.get(chat_id)
-        messages_history = data['mid']
+        messages_history = data['mids']
         old_time = data['time']
-        old_datetime = data['datetime']
         old_query = data['query']
         messages_to_delete = parse_list(messages_history)
-        data.update({'mid': [], 'time': None, 'datetime': None, 'query': None})
+        data.update({'mids': [], 'time': None, 'query': None})
         try:
             for messages_list in messages_to_delete:
                 await self.delete_messages(chat_id, messages_list)
@@ -148,9 +147,8 @@ class Client(Client):
                     await asyncio.sleep(1)
         except:
             restored_data = self.tracker.get(chat_id)
-            restored_data['mid'] += messages_history
+            restored_data['mids'] += messages_history
             restored_data['time'] = old_time
-            restored_data['datetime'] = old_datetime
             restored_data['query'] = old_query
             self.tracker.updates[chat_id] = restored_data
             self.tracker.push_updates()
