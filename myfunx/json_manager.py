@@ -11,10 +11,9 @@ from typing import (Any,
                     Union,
                     Optional,)
 BASE_DICT = {
-    'usr': None,
-    'mid': [],
+    'user': None,
+    'mids': [],
     'time': None,
-    'datetime': None,
     'query': None,
 }
 
